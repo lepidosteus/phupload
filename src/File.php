@@ -22,6 +22,8 @@ class File
         $this->_path = $path;
         $this->_name = $name;
     }
+
+    //public function create_from_files(array )
     
     public function move()
     {
