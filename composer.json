@@ -1,0 +1,21 @@
+{
+    "name": "lepidosteus/phupload",
+    "description": "Check file uploads validity, easily",
+    "keywords": ["lepidosteus", "upload"],
+    "license": "Unilicense",
+    "authors": [
+        {
+            "name": "Vianney Devreese",
+            "email": "lepidosteus@gmail.com"
+        }
+    ],
+    "type": "library",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lepidosteus\\Phupload\\": "src/"
+        }
+    }
+}
