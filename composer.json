@@ -2,7 +2,7 @@
     "name": "lepidosteus/phupload",
     "description": "Check file uploads validity, easily",
     "keywords": ["lepidosteus", "upload"],
-    "license": "Unilicense",
+    "license": "Unlicense",
     "authors": [
         {
             "name": "Lepidosteus",
