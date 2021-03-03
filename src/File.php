@@ -105,7 +105,7 @@ class File
     public function move(string $destination_folder, string $filename, bool $allow_overwrite = false): bool
     {
         $filename = strtr($filename, ["/" => '', "\\" => '']);
-        $destination_path = (string)new Path($destination_folder.$filename);
+        $destination_path = (string)new Path($destination_folder.DIRECTORY_SEPARATOR.$filename);
         if (\file_exists($destination_path) && !$allow_overwrite) {
             return false;
         }
