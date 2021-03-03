@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 //    $uploader = Uploader::createJpeg($maxsize)->required(true)->size('1M', '10M')->extension('jpg')->mime('image/jpeg');
 
     $upload = $uploader->validate('myfile');
-    if ($upload->has_errors) {
+    if ($upload->has_errors()) {
         $errors = $upload->errors();
         foreach ($errors as $error) {
             echo '<div>'.htmlentities($error).'</div>';

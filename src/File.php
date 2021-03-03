@@ -15,6 +15,11 @@ class File
     protected string $_field;
     protected int $_size;
 
+    static public function create()
+    {
+        //
+    }
+
     public function __construct(string $field)
     {
         $this->_field = $field;
@@ -35,14 +40,24 @@ class File
         unlink()
     }
 
-    public function size()
+    public function size(): int
     {
-        //
+        return
     }
 
-    public function name()
+    public function exists(): bool
+    {
+        return \file_exists($this->_path);
+    }
+
+    public function name(): string
     {
         return $this->_name;
+    }
+
+    public function extension(): string
+    {
+        return $this->_path->extension();
     }
 
     public function field()

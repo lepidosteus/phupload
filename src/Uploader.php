@@ -21,7 +21,11 @@ class Uploader
     public function validate(string $field, array $source = null): Upload
     {
         $source ??= $_FILES;
+
+        $file = File::create($source, $field);
+        
         $file = self::files_to_file($source, $field);
+        
         $errors = $this->_ruleset->validate($file);
 
         $result = new Upload($file, $errors);
@@ -37,13 +41,13 @@ class Uploader
 
     public function min_size(int $min_size): self
     {
-        $this->_ruleset[] = new Rules\MinSize($min_size);
+        $this->_ruleset[] = new Rules\Size(Rules\Size::MIN, $min_size);
         return $this;
     }
 
     public function max_size(int $max_size): self
     {
-        $this->_ruleset[] = new Rules\MaxSize($max_size);
+        $this->_ruleset[] = new Rules\Size(Rules\Size::MAX, $max_size);
         return $this;
     }
 
