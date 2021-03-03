@@ -14,8 +14,7 @@ class Uploader
 
     public function __construct()
     {
-        $this->_ruleset = [];
-        $this->required(true);
+        $this->_ruleset = new Ruleset();
     }
 
     public function validate(string $field, array $source = null): Upload
@@ -23,8 +22,6 @@ class Uploader
         $source ??= $_FILES;
 
         $file = File::create($source, $field);
-        
-        $file = self::files_to_file($source, $field);
         
         $errors = $this->_ruleset->validate($file);
 
@@ -35,23 +32,23 @@ class Uploader
 
     public function required(bool $required = true): self
     {
-        $this->_ruleset[0] = new Rules\Required($required);
+        $this->_ruleset->required($required);
         return $this;
     }
 
-    public function min_size(int $min_size): self
+    public function min_size($min_size): self
     {
-        $this->_ruleset[] = new Rules\Size(Rules\Size::MIN, $min_size);
+        $this->_ruleset->push(new Rules\Size(Rules\Size::MIN, $min_size));
         return $this;
     }
 
-    public function max_size(int $max_size): self
+    public function max_size($max_size): self
     {
-        $this->_ruleset[] = new Rules\Size(Rules\Size::MAX, $max_size);
+        $this->_ruleset->push(new Rules\Size(Rules\Size::MAX, $max_size));
         return $this;
     }
 
-    public function size(int $min_size, int $max_size): self
+    public function size($min_size, $max_size): self
     {
         $this->min_size($min_size);
         $this->max_size($max_size);
@@ -63,7 +60,7 @@ class Uploader
         if (!\is_array($allowed_extensions)) {
             $allowed_extensions = [$allowed_extensions];
         }
-        $this->_ruleset[] = new Rules\Extensions($allowed_extensions);
+        $this->_ruleset->push(new Rules\Extensions($allowed_extensions));
         return $this;
     }
 
@@ -72,7 +69,7 @@ class Uploader
         if (!\is_array($allowed_mimes)) {
             $allowed_mimes = [$allowed_mimes];
         }
-        $this->_ruleset[] = new Rules\Mimes($allowed_mimes);
+        $this->_ruleset->push(new Rules\Mimes($allowed_mimes));
         return $this;
     }
 
@@ -80,11 +77,11 @@ class Uploader
     public function add_rule($rule): self
     {
         if ($rule instanceof Rule) {
-            $this->_ruleset[] = $rule;
+            $this->_ruleset->push($rule);
         } elseif ($rule instanceof \Closure) {
-            $this->_ruleset[] = new Rules\Custom($rule);
+            $this->_ruleset->push(new Rules\Custom($rule));
         } elseif (\is_callable($rule)) {
-            $this->_ruleset[] = new Rules\Custom(\Closure::fromCallable($rule));
+            $this->_ruleset->push(new Rules\Custom(\Closure::fromCallable($rule)));
         } else {
             throw new \InvalidArgumentException('Only instances of Rules or closures can be used as upload rules');
         }

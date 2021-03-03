@@ -17,11 +17,11 @@ class Size extends \Lepidosteus\Phupload\Rule
             $size = (string)$size;
         }
         if (preg_match('/^\d+G$/i', $size)) {
-            $this->_size = (int)substr(0, -1, $size) * 1024 * 1024 * 1024;
+            $this->_size = (int)substr($size, 0, -1) * 1024 * 1024 * 1024;
         } elseif (preg_match('/^\d+M$/i', $size)) {
-            $this->_size = (int)substr(0, -1, $size) * 1024 * 1024;
+            $this->_size = (int)substr($size, 0, -1) * 1024 * 1024;
         } elseif (preg_match('/^\d+K$/i', $size)) {
-            $this->_size = (int)substr(0, -1, $size) * 1024;
+            $this->_size = (int)substr($size, 0, -1) * 1024;
         } elseif (preg_match('/^\d+$/', $size)) {
             $this->_size = (int)$size;
         } else {

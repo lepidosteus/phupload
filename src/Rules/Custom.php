@@ -12,7 +12,7 @@ class Custom extends \Lepidosteus\Phupload\Rule
         $this->_cb = $cb;
     }
 
-    public function validate(File $file): bool
+    public function validate(\Lepidosteus\Phupload\File $file): bool
     {
         return ($this->_cb)($file);
     }

@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Lepidosteus\Phupload\Rules;
 
-class Required extends Core
+class UploadError extends Core
 {
     protected bool $_required;
 
@@ -14,9 +14,14 @@ class Required extends Core
 
     public function validate(?\Lepidosteus\Phupload\File $file): bool
     {
-        if ($this->_required) {
-            return !\is_null($file);
+        switch ($file->error()) {
+            case UPLOAD_ERR_OK:
+                return true;
+            case UPLOAD_ERR_NO_FILE:
+            case UPLOAD_ERR_INI_SIZE:
+            case UPLOAD_ERR_FORM_SIZE:
+            default:
+                return false;
         }
-        return true;
     }
 }

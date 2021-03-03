@@ -3,65 +3,112 @@ declare(strict_types = 1);
 
 namespace Lepidosteus\Phupload;
 
-// TODO locale detection + setlocale 
-// TODO extension
-// TOOD manipulation
-// TODO realpath
-
 class File
 {
-    protected Path $_path;
-    protected string $_name;
     protected string $_field;
-    protected int $_size;
 
-    static public function create()
+    protected string $_files_name; 
+    protected string $_files_type; 
+    protected int $_files_size; 
+    protected string $_files_tmp_name; 
+    protected int $_files_error; 
+
+    static public function create(array $source, string $field): ?self
     {
-        //
+        if (!isset($source[$field]) || !\is_array($source[$field])) {
+            return null;
+        }
+
+        $file = $source[$field];
+
+        foreach (['name', 'type', 'size', 'tmp_name', 'error'] as $key) {
+            if (!isset($file[$key])) {
+                return null;
+            }
+        }
+
+        if ($file['error'] == UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        return new self($field, $file);
     }
 
-    public function __construct(string $field)
+    public function __construct(string $field, array $data)
     {
+        foreach (['name', 'type', 'size', 'tmp_name', 'error'] as $key) {
+            if (!isset($data[$key])) {
+                throw new \InvalidArgumentException('Phupload\File must receive a valid file array entry');
+            }
+        }
+
         $this->_field = $field;
 
-        $this->_path = $path;
-        $this->_name = $name;
+        $this->_files_name = $data['name'];
+        $this->_files_type = $data['type'];
+        $this->_files_size = $data['size'];
+        $this->_files_tmp_name = $data['tmp_name'];
+        $this->_files_error = $data['error'];
     }
 
-    //public function create_from_files(array )
-    
-    public function move()
+    public function error(): int
     {
-        //
-    }
-
-    public function delete()
-    {
-        unlink()
+        return $this->_files_error;
     }
 
     public function size(): int
     {
-        return
+        return $this->_files_size;
     }
 
-    public function exists(): bool
+    public function path(): Path
     {
-        return \file_exists($this->_path);
+        return new Path($this->_files_tmp_name);
     }
 
-    public function name(): string
+    public function mime(): string
     {
-        return $this->_name;
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, (string)$this->path());
+        finfo_close($finfo);
+        return $mime;
+    }
+
+    public function name(): Path
+    {
+        return new Path($this->_files_name);
     }
 
     public function extension(): string
     {
-        return $this->_path->extension();
+        return $this->name()->extension();
     }
 
-    public function field()
+    public function size_pretty(): string
     {
-        return $this->_field;
+        $size = $this->size();
+        $KB = 1024;
+        $MB = $KB*1024;
+        $GB = $MB*1024;
+        if (($size / $GB) > 1) {
+            return (string)round($size / $GB, 2).'GB';
+        }
+        if (($size / $MB) > 1) {
+            return (string)round($size / $MB, 2).'MB';
+        }
+        if (($size / $KB) > 1) {
+            return (string)round($size / $KB, 2).'KB';
+        }
+        return (string)$size;
+    }
+
+    public function move(string $destination_folder, string $filename, bool $allow_overwrite = false): bool
+    {
+        $filename = strtr($filename, ["/" => '', "\\" => '']);
+        $destination_path = (string)new Path($destination_folder.$filename);
+        if (\file_exists($destination_path) && !$allow_overwrite) {
+            return false;
+        }
+        return move_uploaded_file((string)$this->path(), $destination_path);
     }
 }

@@ -12,7 +12,7 @@ class Mimes extends \Lepidosteus\Phupload\Rule
         $this->_allowed_mimes = array_map('strtolower', $allowed_mimes);
     }
 
-    public function validate(File $file): bool
+    public function validate(\Lepidosteus\Phupload\File $file): bool
     {
         return in_array(strtolower($file->mime()), $this->_allowed_mimes);
     }

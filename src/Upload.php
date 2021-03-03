@@ -6,9 +6,9 @@ namespace Lepidosteus\Phupload;
 class Upload
 {
     protected array $_errors;
-    protected File $_file;
+    protected ?File $_file;
 
-    public function create(File $file, array $errors)
+    public function __construct(?File $file, array $errors)
     {
         $this->_file = $file;
         $this->_errors = $errors;
@@ -19,7 +19,7 @@ class Upload
         return $this->_errors;
     }
 
-    public function file(): File
+    public function file(): ?File
     {
         return $this->_file;
     }
@@ -27,5 +27,10 @@ class Upload
     public function has_errors()
     {
         return !empty($this->_errors);
+    }
+    
+    public function has_file()
+    {
+        return !\is_null($this->_file);
     }
 }
