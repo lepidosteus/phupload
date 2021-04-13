@@ -16,3 +16,8 @@ var_dump($p->pathinfo());
 $p = new Path("/////zefzfez///ezfe/cscs///adgg.eee.rgr");
 var_dump($p->pathinfo());
 
+$p = new Path("/////zefzfez///ezfe/cscs///ééé.àààà.rgr");
+var_dump($p->pathinfo());
+
+$p = new Path("/////zef\\zfez///ezfe/cscs///ééé.àààà.rgr");
+var_dump($p->pathinfo());

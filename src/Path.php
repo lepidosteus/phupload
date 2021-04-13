@@ -16,7 +16,8 @@ class Path
 
     public function __construct(string $path)
     {
-        if (!ctype_print($path)) {
+        $path = trim($path);
+        if (false !== \strpbrk($path, implode('', array_merge(array_map('chr', range(0, 31)), ['<', '>', ':', '"', '|', '?', '*'])))) {
             throw new \InvalidArgumentException('Argument $path must be valid path string, illegal characters detected');
         }
         $this->_path = \preg_replace('#'.quotemeta(\DIRECTORY_SEPARATOR).'{2,}#', \DIRECTORY_SEPARATOR, $path);
